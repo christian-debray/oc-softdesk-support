@@ -4,10 +4,10 @@ from accounts.models import User
 
 class Project(models.Model):
     """ProjectA = Project(
-        name="P_A",
-        type=Project.ProjectType.BACKEND,
-        description="test descr",
-        author=User.objects.get(username="test_user"))
+    name="P_A",
+    type=Project.ProjectType.BACKEND,
+    description="test descr",
+    author=User.objects.get(username="test_user"))
     """
 
     class ProjectType(models.TextChoices):
@@ -36,6 +36,9 @@ class Contributor(models.Model):
 
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ['user', 'project']
 
 
 class Issue(models.Model):

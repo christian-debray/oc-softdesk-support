@@ -44,6 +44,13 @@ class IssueSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
 
+    def validate(self, data):
+        """Check the issue author is also a contributor to the project
+        """
+        author_contributor = Contributor.objects.get(pk=data.get('author'))
+        if author_contributor.project.pk != data.get('project'):
+            raise serializers.ValidationError("Issue author must be a contributor to the parent project.")
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -52,6 +59,8 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = ["uuid"]
 
     def create(self, validated_data):
+        """Create a UUID when storing a comment.
+        """
         comment = Comment(
             uuid=uuid.uuid4(),
             issue=validated_data.get("issue"),
@@ -60,3 +69,11 @@ class CommentSerializer(serializers.ModelSerializer):
         )
         comment.save()
         return comment()
+
+    def validate(self, data):
+        """Check the comment author is also a contributor to the project
+        """
+        author_contributor = Contributor.objects.get(pk=data.get('author'))
+        comment_project = Issue.objects.get(pk=data.get('issue')).project
+        if author_contributor.project.pk != comment_project:
+            raise serializers.ValidationError("Comment author must be a contributor to the parent project.")
