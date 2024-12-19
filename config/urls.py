@@ -19,11 +19,11 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from accounts.views import UserViewset
 
-router = DefaultRouter()
-router.register(r'users', viewset=UserViewset, basename='user')
+auth_router = DefaultRouter()
+auth_router.register(r'users', viewset=UserViewset, basename='user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include(router.urls)),
-    path('', include("api.urls"))
+    path('api-auth/', include(auth_router.urls)),
+    path('api/', include("api.urls"))
 ]

@@ -3,6 +3,13 @@ from accounts.models import User
 
 
 class Project(models.Model):
+    """ProjectA = Project(
+        name="P_A",
+        type=Project.ProjectType.BACKEND,
+        description="test descr",
+        author=User.objects.get(username="test_user"))
+    """
+
     class ProjectType(models.TextChoices):
         BACKEND = "BACKEND", "Backend"
         FRONTEND = "FRONTEND", "Frontend"
@@ -26,6 +33,7 @@ class Contributor(models.Model):
     check if a user can post a comment to an issue
     Contributor.objects.get(user__username=username, project=)
     """
+
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
 
@@ -41,7 +49,7 @@ class Issue(models.Model):
         BUG = "BUG", "bug"
         FEATURE = "FEATURE", "feature"
         TASK = "TASK", "task"
-    
+
     class IssueStatus(models.TextChoices):
         TODO = "ToDo", "toDo"
         INPROGRESS = "InProgress", "InProgress"
@@ -51,20 +59,32 @@ class Issue(models.Model):
     author = models.ForeignKey(to=Contributor, on_delete=models.CASCADE)
     title = models.CharField(max_length=128, null=False, blank=False)
     description = models.TextField(blank=True)
-    assignee = models.ForeignKey(to=Contributor, on_delete=models.CASCADE, null=True, blank=True, related_name="issue_assignee")
-    priority = models.CharField(choices=IssuePriority, null=False, max_length=8, default=IssuePriority.MEDIUM)
-    type = models.CharField(choices=IssueType, null=False, max_length=8, default=IssueType.BUG)
-    status = models.CharField(choices=IssueStatus, null=False, max_length=10, default=IssueStatus.TODO)
+    assignee = models.ForeignKey(
+        to=Contributor,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="issue_assignee",
+    )
+    priority = models.CharField(
+        choices=IssuePriority, null=False, max_length=8, default=IssuePriority.MEDIUM
+    )
+    type = models.CharField(
+        choices=IssueType, null=False, max_length=8, default=IssueType.BUG
+    )
+    status = models.CharField(
+        choices=IssueStatus, null=False, max_length=10, default=IssueStatus.TODO
+    )
     created_time = models.DateTimeField(auto_now_add=True)
 
 
 class Comment(models.Model):
-    """Project of a comment:
-    """
+    """Project of a comment:"""
+
     issue = models.ForeignKey(to=Issue, on_delete=models.CASCADE)
     author = models.ForeignKey(to=Contributor, on_delete=models.CASCADE)
     description = models.TextField(null=False, blank=False)
-    uuid = models.CharField(max_length=32, null=False, blank=True)
+    uuid = models.CharField(max_length=36, null=False, blank=True, unique=True)
 
 
 # class Contributor(models.Model):
