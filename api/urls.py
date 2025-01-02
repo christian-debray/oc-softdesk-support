@@ -1,13 +1,23 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 from api import views
 
-
-api_router = DefaultRouter()
-api_router.register(r'projects', viewset=views.ProjectViewSet, basename='project')
-api_router.register(r'contributors', viewset=views.ContributorViewSet, basename='contributor')
-api_router.register(r'issue', viewset=views.IssueViewSet, basename='issue')
-api_router.register(r'comment', viewset=views.CommentViewSet, basename='comment')
 urlpatterns = [
-    path('', include(api_router.urls))
+    path("projects/", views.ProjectView.as_view(), name="projects"),
+    path("projects/<int:pk>/", views.ProjectView.as_view(), name="project-details"),
+    path("contributors/", views.ContributorView.as_view(), name="contributors"),
+    path(
+        "projects/<int:project_id>/contributors/",
+        views.ProjectContributorView.as_view(),
+        name="project-contributors",
+    ),
+    path(
+        "projects/<int:project_id>/issues/",
+        views.ProjectIssueView.as_view(),
+        name="project-issues",
+    ),
+    path(
+        "projects/<int:project_id>/issues/<int:issue_id>",
+        views.ProjectIssueView.as_view(),
+        name="issue-details",
+    ),
 ]

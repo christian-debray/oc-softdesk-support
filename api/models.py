@@ -20,7 +20,7 @@ class Project(models.Model):
     type = models.CharField(choices=ProjectType, null=False, blank=False, max_length=8)
     description = models.TextField(null=False, blank=True)
     created_time = models.DateTimeField(auto_now_add=True)
-    author = models.OneToOneField(to=User, on_delete=models.CASCADE)
+    author = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
 
 class Contributor(models.Model):
